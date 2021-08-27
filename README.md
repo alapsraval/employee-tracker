@@ -62,4 +62,4 @@ Licensed under the [MIT](https://opensource.org/licenses/MIT) license.
 
 ## Screencast
 
-[![Employee Taker](/screenshot.png)](https://youtu.be/)
+[![Employee Tracker](/screenshot.png)](https://youtu.be/)
