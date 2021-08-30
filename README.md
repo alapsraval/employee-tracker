@@ -1,6 +1,30 @@
 # Employee Tracker
 It is a CMS (Content Management System) for managing a company's employees. You can add/view departments, roles, employees, and update employee roles using this command-line application.
 
+## Schema
+
+This app will create the following database schema containing three tables:
+
+* **department**:
+
+  * **id** - INT PRIMARY KEY
+  * **name** - VARCHAR(30) to hold department name
+
+* **role**:
+
+  * **id** - INT PRIMARY KEY
+  * **title** -  VARCHAR(30) to hold role title
+  * **salary** -  DECIMAL to hold role salary
+  * **department_id** -  INT to hold reference to department role belongs to
+
+* **employee**:
+
+  * **id** - INT PRIMARY KEY
+  * **first_name** - VARCHAR(30) to hold employee first name
+  * **last_name** - VARCHAR(30) to hold employee last name
+  * **role_id** - INT to hold reference to role employee has
+  * **manager_id** - INT to hold reference to another employee that manages the employee being Created. This field may be null if the employee has no manager
+
 ## Table of Contents
 1. [Dependencies](#dependencies)
 2. [Installation](#installation)
@@ -38,4 +62,4 @@ Licensed under the [MIT](https://opensource.org/licenses/MIT) license.
 
 ## Screencast
 
-[![Employee Taker](/screenshot.png)](https://youtu.be/)
+[![Employee Tracker](/screenshot.png)](https://youtu.be/)
