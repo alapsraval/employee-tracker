@@ -20,6 +20,7 @@ const connection = mysql.createConnection({
 const showOptions = () => {
     getRoles();
     getEmployees();
+    getDepartments();
 
     inquirer
         .prompt({
@@ -48,9 +49,15 @@ const showOptions = () => {
                     readRows(tableName);
                     break;
                 case "add":
-                    if (tableName === 'employee') createEmployee(tableName);
-                    if (tableName === 'role') createRole(tableName);
-                    if (tableName === 'deparment') createDeparment(tableName);
+                    if (tableName === 'employee') {
+                        createEmployee(tableName)
+                    } else if (tableName === 'role') {
+                        createRole(tableName)
+                    } else if (tableName === 'department') {
+                        createDepartment(tableName)
+                    } else {
+                        connection.end();
+                    };
                     break;
                 default:
                     connection.end();
@@ -112,6 +119,30 @@ const createEmployee = () => {
         });
 };
 
+const createDepartment = () => {
+    inquirer
+        .prompt([
+            {
+                name: 'name',
+                type: 'input',
+                message: 'Department Name: ',
+            }
+        ])
+        .then((answer) => {
+            connection.query(
+                `INSERT INTO department SET ?`,
+                {
+                    name: answer.name,
+                },
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`Department "${answer.name}" was added successfully!`);
+                    showOptions();
+                }
+            );
+        });
+};
+
 // Helper functions
 const getEmployees = () => {
     connection.query('SELECT * FROM employee', (err, res) => {
@@ -135,7 +166,12 @@ const getEmployees = () => {
 const getDepartments = () => {
     connection.query('SELECT * FROM department', (err, res) => {
         if (err) throw err;
-        departments = [...res];
+        departments = res.map(department => {
+            return {
+                name: department.name,
+                value: department.id
+            }
+        });
     });
 };
 
