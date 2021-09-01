@@ -11,16 +11,44 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
-const readEmployees = () => {
-    connection.query('SELECT * FROM employee', (err, res) => {
+const readTable = (tableName) => {
+    connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
         if (err) throw err;
         console.table(res);
+        connection.end();
     });
 };
+
+const showOptions = () => {
+    inquirer
+        .prompt({
+            name: 'crud',
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: [
+                // 'Add Employee',
+                // 'Add Department',
+                // 'Add Role',
+                { name: 'View Employees', value: 'employee' },
+                { name: 'View Departments', value: 'department' },
+                { name: 'View Roles', value: 'role' },
+                // 'View Employees by Manager',
+                // 'Update Employee Role',
+                // 'Update Employee Manager'
+            ],
+        })
+        .then((answer) => {
+            if (answer.crud === 'employee' || answer.crud === 'department' || answer.crud === 'role') {
+                readTable(answer.crud);
+            } else {
+                connection.end();
+            }
+        });
+}
 
 connection.connect((err) => {
     if (err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
-    readEmployees();
-    connection.end();
+    showOptions();
+    // connection.end();
 });
