@@ -2,7 +2,6 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
 require('dotenv').config();
-
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -11,44 +10,52 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
-const viewTable = (tableName) => {
-    connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        connection.end();
-    });
-};
-
 const showOptions = () => {
+
     inquirer
         .prompt({
-            name: 'crud',
+            name: 'crudOption',
             type: 'list',
             message: 'What would you like to do?',
             choices: [
-                // 'Add Employee',
-                // 'Add Department',
-                // 'Add Role',
-                { name: 'View Employees', value: 'employee' },
-                { name: 'View Departments', value: 'department' },
-                { name: 'View Roles', value: 'role' },
+                { name: 'View Employees', value: 'view-employee' },
+                { name: 'View Departments', value: 'view-department' },
+                { name: 'View Roles', value: 'view-role' },
                 // 'View Employees by Manager',
                 // 'Update Employee Role',
                 // 'Update Employee Manager'
+                { name: 'Quit', value: 'quit-app' }
             ],
         })
         .then((answer) => {
-            if (answer.crud === 'employee' || answer.crud === 'department' || answer.crud === 'role') {
-                viewTable(answer.crud);
-            } else {
-                connection.end();
+            let crud = answer.crudOption.split("-")[0];
+            let table = answer.crudOption.split("-")[1];
+            let results = [];
+            switch (crud) {
+                case "view":
+                    readRows(table);
+                    break;
+                case "add":
+
+                    break;
+                default:
+                    connection.end();
             }
         });
 }
+
+// CRUD operations
+
+const readRows = (tableName) => {
+    connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        showOptions();
+    });
+};
 
 connection.connect((err) => {
     if (err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
     showOptions();
-    // connection.end();
 });
