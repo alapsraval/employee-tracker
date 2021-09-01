@@ -68,11 +68,24 @@ const showOptions = () => {
 // CRUD operations
 
 const readRows = (tableName) => {
-    connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        showOptions();
-    });
+    if (tableName === 'employee') {
+        connection.query(
+            `SELECT e.first_name as First, e.last_name as Last, r.title as Title, d.name as Department, salary as Salary, concat(m.first_name, ' ', m.last_name) as Manager
+            FROM employee as e
+            LEFT JOIN role as r on e.role_id = r.id 
+            LEFT JOIN department as d on r.department_id = d.id
+            LEFT JOIN employee as m on e.manager_id = m.id`, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+            showOptions();
+        });
+    } else {
+        connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+            showOptions();
+        });
+    }
 };
 
 const createEmployee = () => {
