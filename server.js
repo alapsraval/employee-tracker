@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
-const readTable = (tableName) => {
+const viewTable = (tableName) => {
     connection.query(`SELECT * FROM ${tableName}`, (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -39,7 +39,7 @@ const showOptions = () => {
         })
         .then((answer) => {
             if (answer.crud === 'employee' || answer.crud === 'department' || answer.crud === 'role') {
-                readTable(answer.crud);
+                viewTable(answer.crud);
             } else {
                 connection.end();
             }
