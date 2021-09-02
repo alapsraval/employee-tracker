@@ -94,7 +94,8 @@ const showOptions = () => {
             let crud = answer.crudOption.split("-")[0];
             let tableName = answer.crudOption.split("-")[1];
             let filterName = answer.crudOption.split("-")[2];
-            let filterValue = answer.manager;
+            let filterValue;
+            if (filterName === 'manager') filterValue = answer.manager;
             let results = [];
             switch (crud) {
                 case "view":
@@ -107,6 +108,17 @@ const showOptions = () => {
                         createRole(tableName)
                     } else if (tableName === 'department') {
                         createDepartment(tableName)
+                    } else {
+                        connection.end();
+                    };
+                    break;
+                case "update":
+                    if (filterName === 'employee') {
+
+                    } else if (filterName === 'role') {
+                        updateEmployeeRole();
+                    } else if (filterName === 'department') {
+
                     } else {
                         connection.end();
                     };
@@ -254,6 +266,39 @@ const createRole = () => {
                 (err, res) => {
                     if (err) throw err;
                     console.log(`New Role "${answer.title}" was added successfully!`);
+                    showOptions();
+                }
+            );
+        });
+};
+
+const updateEmployeeRole = () => {
+    inquirer
+        .prompt([
+            {
+                name: 'employee',
+                type: 'list',
+                message: 'Select Employee',
+                choices: employees,
+            },
+            {
+                name: 'role',
+                type: 'list',
+                message: 'Select the new role',
+                choices: roles,
+            }
+        ])
+        .then((answer) => {
+            connection.query(
+                `UPDATE employee SET ? WHERE ?`,
+                [{
+                    role_id: answer.role,
+                }, {
+                    id: answer.employee
+                }],
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`Employee Role was updated successfully!`);
                     showOptions();
                 }
             );
