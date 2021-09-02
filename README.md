@@ -32,7 +32,7 @@ This app will create the following database schema containing three tables:
 4. [Contributions](#contributions)
 5. [Contact](#contact)
 6. [License](#license)
-7. [Screenshots](#screenshots)
+7. [Screencast](#screencast)
 
 ## Getting Started
 ### Dependencies
