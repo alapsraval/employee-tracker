@@ -113,12 +113,10 @@ const showOptions = () => {
                     };
                     break;
                 case "update":
-                    if (filterName === 'employee') {
-
+                    if (filterName === 'manager') {
+                        updateEmployeeManager();
                     } else if (filterName === 'role') {
                         updateEmployeeRole();
-                    } else if (filterName === 'department') {
-
                     } else {
                         connection.end();
                     };
@@ -205,7 +203,7 @@ const createEmployee = () => {
                 (err, res) => {
                     if (err) throw err;
                     console.log('Your entry was added successfully!');
-                    showOptions();
+                    init();
                 }
             );
         });
@@ -229,7 +227,7 @@ const createDepartment = () => {
                 (err, res) => {
                     if (err) throw err;
                     console.log(`Department "${answer.name}" was added successfully!`);
-                    showOptions();
+                    init();
                 }
             );
         });
@@ -266,7 +264,7 @@ const createRole = () => {
                 (err, res) => {
                     if (err) throw err;
                     console.log(`New Role "${answer.title}" was added successfully!`);
-                    showOptions();
+                    init();
                 }
             );
         });
@@ -299,7 +297,40 @@ const updateEmployeeRole = () => {
                 (err, res) => {
                     if (err) throw err;
                     console.log(`Employee Role was updated successfully!`);
-                    showOptions();
+                    init();
+                }
+            );
+        });
+};
+
+const updateEmployeeManager = () => {
+    inquirer
+        .prompt([
+            {
+                name: 'employee',
+                type: 'list',
+                message: 'Select Employee',
+                choices: employees,
+            },
+            {
+                name: 'manager',
+                type: 'list',
+                message: 'Select the new manager',
+                choices: managers,
+            }
+        ])
+        .then((answer) => {
+            connection.query(
+                `UPDATE employee SET ? WHERE ?`,
+                [{
+                    manager_id: answer.manager,
+                }, {
+                    id: answer.employee
+                }],
+                (err, res) => {
+                    if (err) throw err;
+                    console.log(`Employee Manager was updated successfully!`);
+                    init();
                 }
             );
         });
